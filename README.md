@@ -14,9 +14,18 @@
 
 AeroLink transforms your ESP32 into a powerful wireless range extender with a **premium, modern web interface**. Built from the ground up by **Aarav** ([@agra-aarav15](https://github.com/agra-aarav15)).
 
-> *"Not just a router — it's a statement."*
+## 💰 Why AeroLink?
 
----
+| Commercial Extender | AeroLink (ESP32) |
+|---------------------|------------------|
+| $50–$150+ | **~$6–$15** (ESP32 board) |
+| Locked firmware | **100% open source** |
+| No VPN | **WireGuard built-in** |
+| Basic UI | **Glassmorphism dashboard** |
+| Cloud-dependent | **Runs fully local** |
+| Vendor abandonware | **You own it forever** |
+
+**Best Wi-Fi extender per dollar on the planet.** Built by Aarav, for everyone.
 
 ## ✨ Features
 
