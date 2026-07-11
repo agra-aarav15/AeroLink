@@ -1,0 +1,25 @@
+name: Build AeroLink Firmware
+
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: ESP-IDF Build
+        uses: espressif/esp-idf-ci-action@v1
+        with:
+          esp_idf_version: v5.5
+          target: esp32
+
+      - name: Upload Firmware
+        uses: actions/upload-artifact@v4
+        with:
+          name: aerolink-firmware
+          path: build/aerolink.bin
