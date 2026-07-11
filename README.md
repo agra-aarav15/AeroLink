@@ -14,6 +14,10 @@
 
 AeroLink transforms your ESP32 into a powerful wireless range extender with a **premium, modern web interface**. Built from the ground up by **Aarav** ([@agra-aarav15](https://github.com/agra-aarav15)).
 
+> *"Not just a router — it's a statement."*
+
+---
+
 ## 💰 Why AeroLink?
 
 | Commercial Extender | AeroLink (ESP32) |
@@ -26,6 +30,8 @@ AeroLink transforms your ESP32 into a powerful wireless range extender with a **
 | Vendor abandonware | **You own it forever** |
 
 **Best Wi-Fi extender per dollar on the planet.** Built by Aarav, for everyone.
+
+---
 
 ## ✨ Features
 
@@ -56,36 +62,35 @@ AeroLink transforms your ESP32 into a powerful wireless range extender with a **
 
 ## 🚀 Quick Start
 
-### Method 1: OTA Update (Easiest)
-1. Flash stock firmware to your ESP32
-2. Connect to the ESP32's Wi-Fi hotspot
-3. Open `192.168.4.1` in your browser
-4. Navigate to **⚙️ Configuration** → **Firmware Update**
-5. Upload the AeroLink firmware `.bin` file
-
-### Method 2: USB Flash
+### Method 1: USB Flash (Direct)
 ```bash
+# Install esptool
 pip install esptool
 
+# Flash AeroLink at 0x20000 (works best)
 esptool.py --port /dev/ttyUSB0 --baud 460800 write_flash \
   0x0 bootloader.bin \
   0x8000 partition-table.bin \
   0xe000 ota_data_initial.bin \
-  0x10000 aerolink.bin
+  0x20000 aerolink.bin
 ```
 
-### Method 3: GitHub Actions (Phone Friendly)
-1. Fork this repo
-2. Push any change → GitHub builds automatically
-3. Download `.bin` from **Actions** → **Artifacts**
-4. Flash via OTA
+### Method 2: GitHub Actions (Phone Friendly — No PC needed!)
+1. Fork this repo → **Actions** → **Build AeroLink Firmware** → **Run workflow**
+2. Wait ~3 min → Click build → Download **aerolink-firmware** zip
+3. Extract `aerolink.bin` → Flash via ESP Flash Tool app on phone at **0x20000**
+4. Done! Connect to "AeroLink" WiFi → open `192.168.4.1`
+
+> **Note:** After first flash, future updates via **⚙️ Config → OTA Update** in the web dashboard.
+
+---
 
 ## 🏗️ Build from Source
 
 ### ESP-IDF v5.5+
 ```bash
-git clone https://github.com/agra-aarav15/esp32-nat-router-neon-ui.git
-cd esp32-nat-router-neon-ui
+git clone https://github.com/agra-aarav15/AeroLink.git
+cd AeroLink
 idf.py set-target esp32
 idf.py build
 idf.py -p /dev/ttyUSB0 flash monitor
@@ -112,9 +117,8 @@ AeroLink/
 │   ├── pcap_capture/        # Packet capture
 │   ├── syslog/              # Syslog client
 │   └── mqtt_ha/             # MQTT Home Assistant
-├── main/                    # Main application
+├── main/                    # Main application (aerolink.c)
 ├── include/                 # Header files
-├── firmware_esp32/          # Pre-built binaries
 ├── .github/workflows/       # CI/CD build pipeline
 └── README.md
 ```
