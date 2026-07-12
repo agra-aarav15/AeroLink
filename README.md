@@ -124,7 +124,7 @@ AeroLink/
 
 MIT Licence — see [LICENCE](LICENCE) for details.
 
-## 🙏 Credits
+## Credits
 
 | Role | Name |
 |------|------|
