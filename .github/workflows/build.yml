@@ -1,0 +1,76 @@
+name: Build AeroLink Firmware
+
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        target: [esp32, esp32s2, esp32s3, esp32c5, esp32c6]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: ESP-IDF Build
+        uses: espressif/esp-idf-ci-action@v1
+        with:
+          esp_idf_version: v5.5
+          target: ${{ matrix.target }}
+
+      - name: Upload Firmware
+        uses: actions/upload-artifact@v4
+        with:
+          name: aerolink-${{ matrix.target }}
+          path: build/aerolink.bin
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    if: always() && github.event_name == 'push' && github.ref == 'refs/heads/master'
+    permissions:
+      contents: write
+    steps:
+      - name: Download All Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: firmware
+          pattern: aerolink-*
+        continue-on-error: true
+
+      - name: Organize Firmware Files
+        run: |
+          mkdir -p release
+          for dir in firmware/aerolink-*; do
+            [ -d "$dir" ] || continue
+            target=$(basename "$dir" | sed 's/aerolink-//')
+            [ -f "$dir/aerolink.bin" ] && cp "$dir/aerolink.bin" "release/aerolink-${target}.bin"
+          done
+          ls -la release/
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: build-${{ github.run_number }}
+          name: "AeroLink Firmware — Build #${{ github.run_number }}"
+          body: |
+            ## AeroLink Firmware
+
+            Flash address: `0x20000`
+
+            Available firmware files for each target.
+            See attached `.bin` files for your board.
+
+            ### Flash Instructions
+            1. Download the `.bin` for your board
+            2. Connect ESP32 via USB
+            3. Flash to address `0x20000`
+            4. Open serial monitor at 115200 baud
+            5. Connect to `AeroLink` WiFi network
+            6. Open `http://192.168.4.1` in browser
+          files: release/*
+          make_latest: true
