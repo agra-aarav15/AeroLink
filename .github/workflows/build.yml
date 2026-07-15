@@ -22,13 +22,6 @@ jobs:
           esp_idf_version: v5.5
           target: ${{ matrix.target }}
 
-      - name: List Build Output
-        run: |
-          echo "=== build/ directory ==="
-          find build/ -name "*.bin" -type f 2>/dev/null || echo "No build/ dir"
-          echo "=== root ==="
-          ls -la build/ 2>/dev/null || echo "No build/ dir"
-
       - name: Upload All Build Files
         uses: actions/upload-artifact@v4
         with:
@@ -43,7 +36,7 @@ jobs:
   release:
     needs: build
     runs-on: ubuntu-latest
-    if: always() && github.event_name == 'push' && github.ref == 'refs/heads/master'
+    if: always() && github.ref == 'refs/heads/master'
     permissions:
       contents: write
     steps:
